@@ -1,0 +1,28 @@
+acs_property module
+============================
+
+Purpose
+----------------------------
+this sub-module contains all the functions to create and update the property.sqlite database from the data contained in the ACS database on the sql server. it connects via odbc string that is created in the Property class. the sql statements that are used are contained in the text files in the sql folder. this was done to keep the code in the modules clean and allow nice human readable sql statements to be maintained and easily modified. this sub-module also imports functions from the utilities sub-module to clean data from the ACS system and format it as needed. the main method that is called to create data is the createRollYear method. from here all other required methods are called to create and update the property.sqlite database 
+
+Usage
+----------------------------
+
+Create all roll years to 2012::
+
+	from PyRPL.__PyRPL import acs_property
+	z = acs_property.Property()
+	for year in range(2010,2012)
+		z.createRollYear(year)
+
+**OR**
+
+use the `db.createDB()` to create all 2003 to present for taxes and property.
+
+:Note: There is no update function for a property  roll year.  use createRollYear(year) re-create the roll year with the most recent data
+
+Methods
+------------------------------
+
+.. automodule:: __PyRPL.acs_property
+   :members:

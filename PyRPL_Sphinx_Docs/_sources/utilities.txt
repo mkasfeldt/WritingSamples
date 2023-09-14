@@ -1,0 +1,32 @@
+utilities module
+============================
+
+Purpose
+----------------------------
+this module contains helper functions for acs_property and utilities.
+
+Usage
+----------------------------
+
+Calculate the Interest and Penalty on a tax bill for July 2012::
+
+	from PyRPL.__PyRPL import utilities
+	taxbill = utilities.calcPandI(6,2012,1200.31)
+	
+Format an address::
+
+	from PyRPL.__PyRPL import utilities
+	input_address = ['N','103','','W','Elm','','St','Apt','A1']
+	formatted_address = utilities.fixStreetAddress(input_address)
+
+**OR**
+
+use the `db.createDB()` to create all 2003 to present for taxes and property.
+
+:Note: There is no update function for a property  roll year.  use createRollYear(year) re-create the roll year with the most recent data
+
+Methods
+------------------------------
+
+.. automodule:: __PyRPL.utilities
+   :members:

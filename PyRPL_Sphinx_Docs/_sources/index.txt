@@ -1,0 +1,37 @@
+.. PyRPL documentation master file, created by
+   sphinx-quickstart on Fri Jun 29 11:46:15 2012.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to PyRPL's documentation!
+=================================
+**Intro to PyRPL:**
+
+The PyRPL module is a custom Python module that performs a variety of land records functions. The main functions are convenience functions that use internal functions in the __PyRPL folder. PyRPL uses python docstring to document usage of the functions. To access it use the name of the class or method and the __doc__ function PyRPL uses sqlite to house its data. this can be changed to use a more robust database but sqlite meets our current needs. If we change the database from sqlite to another database PostgreSQL should be used as it is thread safe by design. This will allow far fewer changes to the LRWS than if we use a non-thread safe database (i.e. MySQL) 
+
+**Requirements**:
+
+Python 2.7 or newer of version 2 python must be installed
+
+Copy the entire PyRPL folder to the Python2.x\Lib\site-pakages folder where x is the minor version of python you are using (minimum 2.7)
+
+    if using on Windows the path should be
+        C:\Python2.7\Lib\site-packages 
+    if using on Ubuntu 10.04 LTS Linux server
+        /usr/local/lib/python2.7/site-packages 
+		
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   Base Modules
+   code
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

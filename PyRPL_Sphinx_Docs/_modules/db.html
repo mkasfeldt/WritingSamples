@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>db &mdash; PyRPL 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyRPL 0.0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../index.html">PyRPL 0.0.1 documentation</a></div>
+        <div class="rel">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for db</h1><div class="highlight"><pre>
+<span class="c">#! /usr/local/bin/python</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="k">def</span> <span class="nf">doit</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">&#39;doit&#39;</span>
+<div class="viewcode-block" id="updateProperty"><a class="viewcode-back" href="../db.html#db.updateProperty">[docs]</a><span class="k">def</span> <span class="nf">updateProperty</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    updates the Property database for a roll year</span>
+<span class="sd">    updateProperty(year=intYear)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">__PyRPL</span> <span class="kn">import</span> <span class="n">acs_property</span>
+    <span class="k">if</span> <span class="n">year</span><span class="p">:</span>
+        <span class="n">propertyrollyear</span> <span class="o">=</span> <span class="n">acs_property</span><span class="o">.</span><span class="n">Property</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;No roll year entered.  please enter a 4-digit integer roll year&#39;</span>
+        </div>
+<div class="viewcode-block" id="createDB"><a class="viewcode-back" href="../db.html#db.createDB">[docs]</a><span class="k">def</span> <span class="nf">createDB</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">startyear</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span><span class="n">futureyear</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to create the RPL and tax databases. If path is blank the location of</span>
+<span class="sd">    the script is the location of the database.startyear will start with 2010</span>
+<span class="sd">    unleses otherwise specified by using a 4-digit year as an integer.</span>
+<span class="sd">    if futureyear is set to True it will create records for the next rollyear</span>
+<span class="sd">    (i.e. if it is 2012 it will create 2013)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="kn">from</span> <span class="nn">__PyRPL</span> <span class="kn">import</span> <span class="n">acs_taxes</span><span class="p">,</span> <span class="n">acs_property</span><span class="p">,</span> <span class="n">acs_persprop</span>
+    <span class="c">#property Database creation</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">acs_property</span><span class="o">.</span><span class="n">Property</span><span class="p">()</span>
+    
+    <span class="c">#set range of years starting at startyear</span>
+    <span class="n">lastyear</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">futureyear</span><span class="p">:</span>
+        <span class="n">lastyear</span> <span class="o">=</span> <span class="n">lastyear</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="c">#create the property database</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span><span class="n">lastyear</span><span class="p">):</span>
+        <span class="n">z</span><span class="o">.</span><span class="n">createRollYear</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+     
+
+    <span class="c">#set Taxdata        </span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">acs_taxes</span><span class="o">.</span><span class="n">Taxdata</span><span class="p">()</span>
+    
+    <span class="c">#set last tax year to 1 less than rollyear</span>
+    <span class="n">fmod</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">futureyear</span><span class="p">:</span>
+        <span class="n">fmod</span> <span class="o">=</span> <span class="mi">1</span>        
+    <span class="n">lastyear</span> <span class="o">=</span> <span class="n">lastyear</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fmod</span>
+    <span class="n">z</span><span class="o">.</span><span class="n">createTaxDB</span><span class="p">(</span><span class="n">lastyear</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="updateDB"><a class="viewcode-back" href="../db.html#db.updateDB">[docs]</a><span class="k">def</span> <span class="nf">updateDB</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">startyear</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span><span class="n">futureyear</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">update</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to update the RPL and tax databases. If path is blank the location</span>
+<span class="sd">    of the script is the location of the database. startyear will begin</span>
+<span class="sd">    with 2010 unleses otherwise specified by using a 4-digit year as an integer.</span>
+<span class="sd">    if futureyear is set to True it will create records for the next rollyear</span>
+<span class="sd">    (i.e. if it is 2012 it will create 2013). update denotes if a temporary</span>
+<span class="sd">    database should be used.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="kn">from</span> <span class="nn">__PyRPL</span> <span class="kn">import</span> <span class="n">acs_taxes</span><span class="p">,</span> <span class="n">acs_property</span><span class="p">,</span> <span class="n">acs_persprop</span>
+    <span class="c">#property Database creation</span>
+    <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">acs_property</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="s">&#39;workingproperty.sqlite&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">acs_property</span><span class="o">.</span><span class="n">Property</span><span class="p">()</span>
+    
+    <span class="c">#set range of years starting at startyear</span>
+    <span class="n">lastyear</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">futureyear</span><span class="p">:</span>
+        <span class="n">lastyear</span> <span class="o">=</span> <span class="n">lastyear</span> <span class="o">+</span> <span class="mi">2</span>
+    
+    <span class="c">#update the property database</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">startyear</span><span class="p">,</span><span class="n">lastyear</span><span class="p">):</span>
+        <span class="n">z</span><span class="o">.</span><span class="n">createRollYear</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+
+    <span class="c">#set Taxdata</span>
+    <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">acs_taxes</span><span class="o">.</span><span class="n">Taxdata</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="s">&#39;workingtaxbill.sqlite&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">acs_taxes</span><span class="o">.</span><span class="n">Taxdata</span><span class="p">()</span>
+    
+    <span class="c">#set last tax year to 1 less than rollyear</span>
+    <span class="n">fmod</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">futureyear</span><span class="p">:</span>
+        <span class="n">fmod</span> <span class="o">=</span> <span class="mi">1</span>        
+    <span class="n">lastyear</span> <span class="o">=</span> <span class="n">lastyear</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">fmod</span>
+    <span class="n">z</span><span class="o">.</span><span class="n">updateTaxDB</span><span class="p">(</span><span class="n">lastyear</span><span class="p">)</span>
+        
+
+    </div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span><span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Base Modules.html">User Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html">Foundation Modules</a></li>
+</ul>
+
+          <h3 style="margin-top: 1.5em;">Search</h3>
+          <form class="search" action="../search.html" method="get">
+            <input type="text" name="q" />
+            <input type="submit" value="Go" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+          <p class="searchtip" style="font-size: 90%">
+            Enter search terms or a module, class or function name.
+          </p>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../genindex.html" title="General Index"
+             >index</a>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2012, Matt Kasfeldt.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html> 

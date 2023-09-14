@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>acs_taxes module &mdash; PyRPL 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyRPL 0.0.1 documentation" href="index.html" />
+    <link rel="up" title="Foundation Modules" href="code.html" />
+    <link rel="next" title="utilities module" href="utilities.html" />
+    <link rel="prev" title="acs_property module" href="acs_property.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="headertitle"><a
+          href="index.html">PyRPL 0.0.1 documentation</a></div>
+        <div class="rel">
+          <a href="acs_property.html" title="acs_property module"
+             accesskey="P">previous</a> |
+          <a href="utilities.html" title="utilities module"
+             accesskey="N">next</a> |
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="acs-taxes-module">
+<h1>acs_taxes module<a class="headerlink" href="#acs-taxes-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
+<p>Contains all the functions needed to create a tax year, from either the data in the text extracts in the HP mini-computer, or from the ACS database.
+This module has all the functions needed to create and update the <i>billdata.sqlite</i> database from the data contained in the ACS database and the HP mini-computer text files.
+<p>It connects via ODBC strings created in the <i>Taxdata</i> class. The SQL statements used are contained in the text files in the sql folder.
+This was done to keep the code in the modules clean and allow human readable SQL statements to be maintained and easily modified.</p>
+<p>It also imports functions from the <i>utilities</i> module to clean data from the ACS system and format it as needed.
+The method called to create data is the <i>createTaxDB</i> method. The method called to update a tax year is <i>updateTaxDB.</i></p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Create all tax years to 2011:</p>
+<div class="highlight-python"><pre>from PyRPL.__PyRPL import acs_taxes
+taxdata = acs_taxes.Taxdata()
+taxdata.buildHPData()
+for year in range(2011,2012)
+        taxdata.buildACSData(year)
+taxdata.upatePayments(2012)</pre>
+</div>
+<p><strong>OR</strong></p>
+<p>Use the <cite>db.createDB()</cite> to create all 2003 to present for taxes and property.</p>
+<p>Update all tax years to 2011:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PyRPL.__PyRPL</span> <span class="kn">import</span> <span class="n">acs_taxes</span>
+<span class="n">taxdata</span> <span class="o">=</span> <span class="n">acs_taxes</span><span class="o">.</span><span class="n">Taxdata</span><span class="p">()</span>
+<span class="n">taxdata</span><span class="o">.</span><span class="n">updateTaxDB</span><span class="p">(</span><span class="mi">2012</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-__PyRPL.acs_taxes">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#module-__PyRPL.acs_taxes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="__PyRPL.acs_taxes.Taxdata">
+<em class="property">class </em><tt class="descclassname">__PyRPL.acs_taxes.</tt><tt class="descname">Taxdata</tt><big>(</big><em>path=None</em>, <em>dbname='taxbill.sqlite'</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Class to create and update taxdata database. Ensures property database is available.
+The <i>Taxdata</i>(path=&#8217;PathToDB&#8217;) path is fully qualified.
+If the path is blank use location of script.
+The dbname is always taxbill.sqlite</p>
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.buildACSData">
+<tt class="descname">buildACSData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.buildACSData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.buildACSData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the all the needed data from ACS for a tax year and inserts it into
+the local sqlite database. <i>rollyear</i> is the four digit rollyear.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.buildHPData">
+<tt class="descname">buildHPData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.buildHPData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.buildHPData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets data from HP text extract files. These files are located in the
+subdirectory <i>./files/BCO</i> and are further broken down by tax year sub-folders. It will use the <i>getDataFolders</i> function from the utilities module
+to get all of the folders and files that are in the <i>./file/BCO</i> directory and
+build the tax base from those text extract files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.buildMuniNameTable">
+<tt class="descname">buildMuniNameTable</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.buildMuniNameTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.buildMuniNameTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates the <i>municipality</i> table with data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.createTaxDB">
+<tt class="descname">createTaxDB</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.createTaxDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.createTaxDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the initial tax database. It must have the property database to
+run correctly. <i>lastyear</i> is the last tax year to be created in the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.fixHPDuplicatePins">
+<tt class="descname">fixHPDuplicatePins</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.fixHPDuplicatePins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.fixHPDuplicatePins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds and corrects duplicate pins in the HP mini-compuiter data for each tax year from 2003 through 2009, then add the pinss to the <i>duplicatePIN</i> table for corection of payment data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getBillData">
+<tt class="descname">getBillData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getBillData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getBillData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from the tax master file for the year. Returns data set as a dictonary.
+<i>foldername</i> is the name of the folder (i.e. 2009).
+<i>filename</i> is the the file <i>TxxMAST.TXT</i> where <b>xx</b> is the 2 digit year.
+<i>header</i> is the header list of fields in the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getInstallmentDates">
+<tt class="descname">getInstallmentDates</tt><big>(</big><em>rollyear</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getInstallmentDates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getInstallmentDates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets installment dates and grace periods. This only applies to the current
+tax year for calculating statuses. <i>rollyear</i> is the four digit year. This method
+sets the class atributes for first and seocnd installments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getMuniSchoolTaxData">
+<tt class="descname">getMuniSchoolTaxData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getMuniSchoolTaxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getMuniSchoolTaxData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets municipality tax data for schools and mills, etc... r,<i>rollyear</i> is
+the four digit year.  Returns three dictionaries: municipality, uta and tid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getPayemnts">
+<tt class="descname">getPayemnts</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getPayemnts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getPayemnts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all payments for rollyear from ACS. <i>rollyear</i> is the four digit
+year. Returns an sqlite3 object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getRealTaxValues">
+<tt class="descname">getRealTaxValues</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getRealTaxValues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getRealTaxValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the real values for properties from ACS for the <i>taxdata</i> table.
+This includes the land class, acres, and types of values.
+The info will be inserted into the <i>billData</i> table by pin and rollyear.
+<i>rollyear</i> is the four digit year. Returns an sqlite object (tuple of
+tuples).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getRealTaxes">
+<tt class="descname">getRealTaxes</tt><big>(</big><em>rollyear=None</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getRealTaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getRealTaxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the real property taxes on tax bills for a tax year. <i>rollyear</i> is
+the four digit year. Returns an sqlite3 object (tuple of tuples).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getTaxData">
+<tt class="descname">getTaxData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getTaxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getTaxData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the data from the levy file for the year. Returns a dictionary.
+<i>foldername</i> is the name of the folder (i.e. 2009)
+<i>filename</i> is the the file <i>TxxLEVY.TXT</i> where <b>xx</b> is the 2 digit year.
+<i>header</i> is the header list of fields.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getTaxdata">
+<tt class="descname">getTaxdata</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getTaxdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getTaxdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the tax data from ACS. <i>rollyear</i> is the four digit year. Returns 
+sqlite3 object.</p>
+<p><b><i>NOTE: this function is for ACS and is named very similarly to the
+getTaxData HP function (it should be renamed!!!)</i></b></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getsetBillPayment">
+<tt class="descname">getsetBillPayment</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getsetBillPayment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getsetBillPayment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets total payments made on a property. <i>rollyear</i> is the four digit year.
+Returns the number of payements updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getsetLegal">
+<tt class="descname">getsetLegal</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getsetLegal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getsetLegal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts data into the <i>legal</i> table and sets, by comp number, from the HP mini-computer text extracts. 
+Returns the number of records inserted.
+<i>foldername</i> is the name of the folder (i.e. 2009)
+<i>filename</i> is the the file <i>TxxLEGL1.TXT</i> where <b>xx</b> is the 2 digit year</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getsetOverride">
+<tt class="descname">getsetOverride</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getsetOverride"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getsetOverride" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all properties with override penalties and interest from ACS, and adds
+to bill data to calculate penalties and interest. Returns the number of
+updated records.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getsetTaxPayments">
+<tt class="descname">getsetTaxPayments</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getsetTaxPayments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getsetTaxPayments" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets all payments for a rollyear then sets them to the pin and tax year
+this is needed for calculation penalty and interest. use the computer
+number if tax year is less than 2010 due to pin conflicts. Returns  the
+number of records updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.getsetVoids">
+<tt class="descname">getsetVoids</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.getsetVoids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.getsetVoids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all voided payments and applies them to the tax payments. <i>rollyear</i> is
+the four digit year. Returns the number of records updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setACSBillData">
+<tt class="descname">setACSBillData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setACSBillData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setACSBillData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts ACS data into the <i>billData</i> table. <i>r</i> is a tuple of tuple
+tax data from <i>getTaxdata</i>. <i>rollyear</i> is the four digit year. Returns the number
+of records added.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setBillData">
+<tt class="descname">setBillData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setBillData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setBillData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the <i>billdata</i> table to push data into the other bill tables. Returns <i>None</i> for a good import, or
+<i>error message</i> for errors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setMuniSchoolTaxData">
+<tt class="descname">setMuniSchoolTaxData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setMuniSchoolTaxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setMuniSchoolTaxData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts shcoool, muni millrates, and associated data into the appropriate
+tables. The following variable are required:
+* <i>muni</i> = The muni dictionary Returned from <i>getMuniSchoolTaxData</i>.
+* <i>uta</i> = UTA dictionary Returned from <i>getMuniSchoolTaxData</i>.
+* <i>tid</i> = TID dictionary Returned from <i>getMuniSchoolTaxData</i>.
+* <i>rollyear</i> =The four digit year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setPayments">
+<tt class="descname">setPayments</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setPayments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setPayments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the payements for all records in a data set for a rollyear.  
+<i>rollyear<i> is the four digit year. <i>r</i> is the data set from <i>getPayments</i>
+(sqlite3 objet... a tuple of tuples). Returns the number of records that
+have been inserted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setRealTaxValues">
+<tt class="descname">setRealTaxValues</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setRealTaxValues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setRealTaxValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the real property values for a property with data from getREalTaxValues
+r is the sqlite object (a tuple tuples that are tax values). rollyear
+is the four digit year. Returns  the number of records added</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setRealTaxes">
+<tt class="descname">setRealTaxes</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setRealTaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setRealTaxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the imported data from ACS in the <i>taxValues</i> table to calculate taxes and set them for a correct bill in a rollyear. <i>r</i> is the results
+from the <i>getRealTaxes</i> (sqlite object... a tuple of tuples). <i>rollyear</i> is
+the four digit year. Returnsthe number of records added.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setRealTaxesNet">
+<tt class="descname">setRealTaxesNet</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setRealTaxesNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setRealTaxesNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the net taxes on all records for a roll year. <i>rollyear</i> is the
+four digit year. Returns the number of records updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setTaxData">
+<tt class="descname">setTaxData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setTaxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setTaxData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the <i>taxdata</i> table to insert tax date into other tables.
+Returns <i>None</i> for a good import, or <i>error message</i> for errors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.setTaxdata">
+<tt class="descname">setTaxdata</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.setTaxdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.setTaxdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts ACS data into the <i>taxdata</i> table. <i>r</i> is a tuple of tuple taxdata from
+<i>getTaxdata</i>. <i>rollyear</i> is the four digit year. Returns the number
+of records added.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updateACSBillData">
+<tt class="descname">updateACSBillData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updateACSBillData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updateACSBillData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update ACS bill data with data from the <i>newProperty</i> table in the
+</i>property.sqlite</i> database.  <i>rollyear</i> is the four digit year. Returns the number of records added.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updateBillData">
+<tt class="descname">updateBillData</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updateBillData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updateBillData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the fields not set by the <i>setBillData</i> function : muni info, school name, mill rates, state aid, agratio....
+Based on four digit tax year. Returns the number of updated records.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updateBillStatus">
+<tt class="descname">updateBillStatus</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updateBillStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updateBillStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates bill statuses for all bills.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updatePaymentStatus">
+<tt class="descname">updatePaymentStatus</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updatePaymentStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updatePaymentStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the statuses of bills that are other than paid. <i>rollyear</i> is the
+four digit year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updatePayments">
+<tt class="descname">updatePayments</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updatePayments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updatePayments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all payments made for a rollyear, then adds them to the <i>payment</i>
+table. <i>rollyear</i> is the four digit year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="__PyRPL.acs_taxes.Taxdata.updateTaxDB">
+<tt class="descname">updateTaxDB</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/__PyRPL/acs_taxes.html#Taxdata.updateTaxDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#__PyRPL.acs_taxes.Taxdata.updateTaxDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates all records in an existing tax database.  It must have updated property
+database. <i>lastyear</i> is the last tax year to update as a four digit year.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Base Modules.html">User Modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Foundation Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="acs_property.html">acs_property module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">acs_taxes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">utilities module</a></li>
+</ul>
+</li>
+</ul>
+
+          <h3 style="margin-top: 1.5em;">Search</h3>
+          <form class="search" action="search.html" method="get">
+            <input type="text" name="q" />
+            <input type="submit" value="Go" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+          <p class="searchtip" style="font-size: 90%">
+            Enter search terms or a module, class or function name.
+          </p>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <a href="acs_property.html" title="acs_property module"
+             >previous</a> |
+          <a href="utilities.html" title="utilities module"
+             >next</a> |
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="genindex.html" title="General Index"
+             >index</a>
+            <br/>
+            <a href="_sources/acs_taxes.txt"
+               rel="nofollow">Show Source</a>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2012, Matt Kasfeldt.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

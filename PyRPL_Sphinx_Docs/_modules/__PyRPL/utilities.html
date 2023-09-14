@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>__PyRPL.utilities &mdash; PyRPL 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PyRPL 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../../index.html">PyRPL 0.0.1 documentation</a></div>
+        <div class="rel">
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for __PyRPL.utilities</h1><div class="highlight"><pre>
+<span class="c">#! /usr/local/bin/python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span><span class="p">,</span><span class="n">localtime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span>
+
+<span class="k">def</span> <span class="nf">timed</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+  <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;decorator to show the time to complete a function&quot;&quot;&quot;</span>
+    <span class="c">#print &#39;start timer&#39;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> took </span><span class="si">%d</span><span class="s"> seconds to finish&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+  <span class="k">return</span> <span class="n">wrapper</span>
+
+<div class="viewcode-block" id="fixUnicode"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.fixUnicode">[docs]</a><span class="k">def</span> <span class="nf">fixUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fix unicode issues with data from mssql ACS database.  it is in cp1252</span>
+<span class="sd">    format.  sqlite can only be in utf-8 or utf-16.  this code checks to</span>
+<span class="sd">    see if the current unicode will convert cleanly to utf-8.  if it does</span>
+<span class="sd">    not it forces the non-acceptable utf codes to use accpetable</span>
+<span class="sd">    unicode characters.</span>
+
+<span class="sd">    :param s: unicode data to be cleaned</span>
+<span class="sd">    :type s: unicode</span>
+<span class="sd">    :return: valid utf-8 data</span>
+
+<span class="sd">    </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span> <span class="c">#if not fix it to be acceptable utf-8 code.</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="n">halftemp</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="s">&#39;cp1252&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">halftemp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\xbd</span><span class="s">&#39;</span><span class="p">)</span><span class="o">&gt;-</span><span class="mi">1</span><span class="p">:</span>                
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">halftemp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\xbd</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;half&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">halftemp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\u2013</span><span class="s">&#39;</span><span class="p">)</span><span class="o">&gt;-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">halftemp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\u2013</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">))</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="s">&#39;utf-8&#39;</span><span class="p">,</span><span class="s">&#39;replace&#39;</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&#39;</span><span class="se">\ufffd</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&quot;&#39;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+  </div>
+<div class="viewcode-block" id="removeNulls"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.removeNulls">[docs]</a><span class="k">def</span> <span class="nf">removeNulls</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;change variables from None type to an empty string&quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">s</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="getColumns"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.getColumns">[docs]</a><span class="k">def</span> <span class="nf">getColumns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">table</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;pull data table information from sqlite databases&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">ssql</span> <span class="o">=</span><span class="s">&quot;SELECT * FROM INFORMATION_SCHEMA.Columns where TABLE_NAME = &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span><span class="o">%</span><span class="n">table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span> 
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">])))</span>
+            <span class="n">x</span> <span class="o">=</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">result</span>
+  </div>
+<div class="viewcode-block" id="fixStreetAddress"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.fixStreetAddress">[docs]</a><span class="k">def</span> <span class="nf">fixStreetAddress</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;address must be a list with the data in the following order.</span>
+
+<span class="sd">  1. N_NUMBER_PREFIX.</span>
+<span class="sd">  2. N_NUMBER.</span>
+<span class="sd">  3. N_NUMBER_SUFFIX.</span>
+<span class="sd">  4. N_PRE_DIRECTIONAL.</span>
+<span class="sd">  5. N_STREET_NAME.</span>
+<span class="sd">  6. N_POST_DIRECTIONAL.</span>
+<span class="sd">  7. N_STREET_TYPE.</span>
+<span class="sd">  8. N_UNIT_TYPE.</span>
+<span class="sd">  9. N_UNIT_NUMBER.</span>
+<span class="sd">  </span>
+<span class="sd">  This is used to build addresses for data from ACS tables. this function</span>
+<span class="sd">  returns a tuple containing the formatted full street address, street number,</span>
+<span class="sd">  street and unit.</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c">#clear nulls</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">address</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="n">address</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="s">u&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">address</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span>  <span class="mi">1</span>
+    
+  <span class="c">#build Address</span>
+  <span class="n">addr</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s%s%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">address</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">address</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+  <span class="n">snumber</span> <span class="o">=</span> <span class="n">addr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span> <span class="c">#only address number for the fire number field</span>
+  
+  <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">address</span><span class="p">[</span><span class="mi">4</span><span class="p">],)</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  <span class="n">street</span> <span class="o">=</span> <span class="n">s</span>
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span> <span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span> <span class="n">s</span>
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  
+  <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="n">address</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  <span class="n">street</span> <span class="o">=</span> <span class="n">street</span> <span class="o">+</span> <span class="s">&quot; &quot;</span><span class="o">+</span> <span class="n">s</span> <span class="c">#only the street name</span>
+  <span class="n">street</span> <span class="o">=</span> <span class="n">street</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span> <span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span> <span class="n">s</span>      
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  
+  <span class="n">s</span> <span class="o">=</span> <span class="s">&quot; </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="n">address</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="n">s</span> <span class="c">#only the unit type</span>
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span> <span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span> <span class="n">s</span>
+  <span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span> <span class="c">#full street adress line</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="n">snumber</span><span class="p">,</span><span class="n">street</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>   
+
+</div>
+<div class="viewcode-block" id="getFields"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.getFields">[docs]</a><span class="k">def</span> <span class="nf">getFields</span><span class="p">(</span><span class="n">record</span><span class="p">,</span><span class="n">rollyear</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    creates the sql fields from ACS Data for insertion into the billData table for</span>
+<span class="sd">    an individual record in a four digit rollyear. returns a string that is injected</span>
+<span class="sd">    into the sql insert statement for a record</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">51</span><span class="p">,</span><span class="c">#0-9</span>
+         <span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="c">#10-19</span>
+         <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="c">#20-29</span>
+         <span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="c">#30-39</span>
+         <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="c">#40-49</span>
+         <span class="p">]</span>
+         
+    <span class="n">s</span> <span class="o">=</span><span class="s">&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+      <span class="c">#if i != 0 and i &lt;1000:</span>
+      <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span><span class="mi">15</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+          <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">record</span><span class="p">[</span><span class="mi">41</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">27</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">28</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">30</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">32</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">29</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">33</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">35</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">34</span><span class="p">]]</span>
+          <span class="n">address</span> <span class="o">=</span> <span class="n">fixStreetAddress</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+          <span class="n">address</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+          <span class="k">try</span><span class="p">:</span>
+              <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">address</span><span class="p">)</span>
+          <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+              <span class="k">print</span> <span class="n">e</span>
+              <span class="k">print</span> <span class="n">s</span>
+              <span class="nb">raw_input</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>              
+        <span class="k">elif</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">record</span><span class="p">[</span><span class="mi">52</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">47</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">44</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">54</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">45</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">49</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">54</span><span class="p">],</span><span class="n">record</span><span class="p">[</span><span class="mi">50</span><span class="p">]]</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">fixStreetAddress</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">address</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">address</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">11</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">14</span><span class="p">:</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,&quot;x&quot;&#39;&#39;&#39;</span><span class="o">%</span><span class="n">s</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">i</span> <span class="o">=</span> <span class="n">removeNulls</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+          <span class="n">i</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                                       
+          <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+              
+      <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">14</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;</span><span class="mi">50</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">i</span> <span class="o">=</span> <span class="n">removeNulls</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+          <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="s">&#39;0&#39;</span>
+          <span class="n">i</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                                       
+          <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,</span><span class="si">%s</span><span class="s">&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">s</span> <span class="o">=</span><span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,0&#39;&#39;&#39;</span><span class="o">%</span><span class="n">s</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">deededname</span> <span class="o">=</span> <span class="n">removeNulls</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span>
+    <span class="n">deededname</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">deededname</span><span class="p">)</span>
+    <span class="c">####test fix unicode</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span><span class="si">%s</span><span class="s">,&quot;NA&quot;,&quot;</span><span class="si">%s</span><span class="s">&quot;,&quot;NA&quot;,&quot;P&quot;,0,0,0,0,&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">deededname</span><span class="p">,</span><span class="n">rollyear</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="n">deededname</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">fixUnicode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="getHeader"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.getHeader">[docs]</a><span class="k">def</span> <span class="nf">getHeader</span><span class="p">(</span><span class="n">datafolder</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    gets the header data from a data file and returns a list for use with</span>
+<span class="sd">    converted HP data files. foldername is the name of the data folder where</span>
+<span class="sd">    the file is located.  returns a list of strings for use in creating the</span>
+<span class="sd">    headers</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">r&#39;</span><span class="si">%s</span><span class="s">BCO/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">datafolder</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">getHeader</span> <span class="o">=</span><span class="p">[]</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">getHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">getHeader</span>
+</div>
+<div class="viewcode-block" id="getDataFolders"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.getDataFolders">[docs]</a><span class="k">def</span> <span class="nf">getDataFolders</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    a utility function that gets the data folders and the files that are used</span>
+<span class="sd">    to build the database from the extracted HP text files. returns dict</span>
+<span class="sd">    key = folder name values = files.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#change working dir to BCO</span>
+    <span class="k">print</span> <span class="n">path</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/BCO&#39;</span><span class="o">%</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">folderlist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">folderlist</span><span class="p">:</span>
+        <span class="n">tyear</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span><span class="p">[</span><span class="s">&#39;T</span><span class="si">%s</span><span class="s">MAST.TXT&#39;</span><span class="o">%</span><span class="n">tyear</span><span class="p">,</span><span class="s">&#39;T</span><span class="si">%s</span><span class="s">LEVY.TXT&#39;</span><span class="o">%</span><span class="n">tyear</span><span class="p">,</span><span class="s">&#39;T</span><span class="si">%s</span><span class="s">LEGL1.TXT&#39;</span><span class="o">%</span><span class="n">tyear</span><span class="p">]</span>
+
+    <span class="c">#change back to base dir</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+  </div>
+<div class="viewcode-block" id="calcPandI"><a class="viewcode-back" href="../../utilities.html#__PyRPL.utilities.calcPandI">[docs]</a><span class="k">def</span> <span class="nf">calcPandI</span><span class="p">(</span><span class="n">curmonth</span><span class="p">,</span><span class="n">curyear</span><span class="p">,</span><span class="n">billyear</span><span class="p">,</span><span class="n">tax</span><span class="p">,</span><span class="n">overridePen</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">overrideInt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Calculate the penalty and interest due on a tax bill for a specific</span>
+<span class="sd">    month. the following variables must be  passed into the function.</span>
+<span class="sd">    </span>
+<span class="sd">    :param  curmonth: the month when the bill will be paid.</span>
+<span class="sd">    :type curmonth: int.</span>
+<span class="sd">    :param curyear: the year when the bill will be paid.</span>
+<span class="sd">    :type curyear: int.</span>
+<span class="sd">    :param billyear: the tax year of the bill.</span>
+<span class="sd">    :type billyear: int.</span>
+<span class="sd">    :param tax: the base amount of the bill due tax, SA,SC,DU,MFL.</span>
+<span class="sd">    :type tax: Decimal.</span>
+<span class="sd">    :param overridePen: if the bill has over ride for some reason set this to the percent to be used to calculate the penalty.</span>
+<span class="sd">    :type overridePen: float.</span>
+<span class="sd">    :param overrideInt: if the bill has over ride for some reason set this to the percent to be used to calculate the interest.</span>
+<span class="sd">    :type overrideInt: float.</span>
+<span class="sd">    :returns: a tuple with total tax due, penalty due, interest due.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curmonth</span> <span class="o">=</span> <span class="n">curmonth</span>
+    <span class="c">#fix issue with rounding error in ACS</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="o">.</span><span class="mo">00001</span><span class="p">)</span> 
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">tax</span><span class="p">)</span> <span class="o">+</span> <span class="n">adj</span>
+    <span class="k">print</span> <span class="n">tax</span>
+    <span class="n">currentyear</span> <span class="o">=</span> <span class="n">curyear</span>
+    <span class="n">billyear</span> <span class="o">=</span> <span class="n">billyear</span>
+    <span class="c">#base is january 2011. this is the date all bills will use to calculate</span>
+    <span class="c">#interest from</span>
+    <span class="n">interest_base</span> <span class="o">=</span> <span class="p">((</span><span class="n">currentyear</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">billyear</span><span class="p">)</span> <span class="o">*</span> <span class="mi">12</span>        
+    <span class="c">#calculate penalty base. if the bill year is less than 2007</span>
+    <span class="c">#we must adjust a quarter percent as the penalty was different</span>
+    <span class="c">#by a quarter percent for those years</span>
+    <span class="k">if</span> <span class="n">billyear</span> <span class="o">&gt;</span><span class="mi">2007</span><span class="p">:</span>
+        <span class="n">penalty_base</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2011</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">billyear</span><span class="p">)</span> <span class="o">*</span> <span class="mi">6</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">penalty_base</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">+</span><span class="p">((</span><span class="mi">2011</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">billyear</span><span class="p">)</span> <span class="o">*</span><span class="mi">3</span>            
+    <span class="c">#get number of months from january 2011</span>
+    <span class="n">yearmonthcount</span> <span class="o">=</span> <span class="p">(</span><span class="n">currentyear</span><span class="o">-</span><span class="mi">2010</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">12</span>
+    <span class="n">monthcount</span> <span class="o">=</span> <span class="n">yearmonthcount</span> <span class="o">+</span> <span class="n">curmonth</span> <span class="o">-</span> <span class="mi">1</span> <span class="c">#minus 1 as january = 0</span>
+    <span class="k">if</span> <span class="n">overridePen</span><span class="p">:</span>
+      <span class="n">penalty</span> <span class="o">=</span> <span class="n">overridePen</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c">#take the number of months times .5 then add the penalty base then multiply by .01</span>
+      <span class="c">#to get precentage rate of the penalty</span>
+      <span class="n">penalty</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">((</span><span class="n">monthcount</span> <span class="o">*</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span><span class="n">penalty_base</span><span class="p">)</span> <span class="o">*</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">overrideInt</span><span class="p">:</span>
+      <span class="c">#take the number of months times .5 then add the penalty base then multiply by .01</span>
+      <span class="c">#to get precentage rate of the interest      </span>
+      <span class="n">interest</span> <span class="o">=</span> <span class="n">overrideInt</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">interest</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">((</span><span class="n">curmonth</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span> <span class="n">interest_base</span><span class="p">)</span><span class="o">*</span><span class="n">Decimal</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+    
+    <span class="c">#calc taxes</span>
+    <span class="n">calcint</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">*</span> <span class="n">interest</span> <span class="o">+</span> <span class="n">adj</span>
+    <span class="n">calcint</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">calcint</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">calcpen</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">*</span> <span class="n">penalty</span> <span class="o">+</span> <span class="n">adj</span>
+    <span class="n">calcpen</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">calcpen</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tax</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">calctax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">calcint</span> <span class="o">+</span> <span class="n">calcpen</span>
+    <span class="k">print</span> <span class="n">curyear</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">penalty</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="nb">round</span><span class="p">(</span><span class="n">interest</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">calctax</span><span class="p">,</span><span class="n">calcpen</span><span class="p">,</span><span class="n">calcint</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Base Modules.html">User Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Foundation Modules</a></li>
+</ul>
+
+          <h3 style="margin-top: 1.5em;">Search</h3>
+          <form class="search" action="../../search.html" method="get">
+            <input type="text" name="q" />
+            <input type="submit" value="Go" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+          <p class="searchtip" style="font-size: 90%">
+            Enter search terms or a module, class or function name.
+          </p>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../../genindex.html" title="General Index"
+             >index</a>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2012, Matt Kasfeldt.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html> 

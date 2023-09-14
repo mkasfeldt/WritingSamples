@@ -1,0 +1,39 @@
+acs_taxes module
+============================
+
+Purpose
+----------------------------
+Contains all the functions needed to create a tax year from either the data in the text extracts from the HP or from the ACS database.
+This module contains all the functions to create and update the billdata.sqlite database from the data contained in the ACS database on the sql server and the HP text files. 
+it connects via odbc string that is created in the Taxdata class. The sql statements that are used are contained in the text files in the sql folder. 
+This was done to keep the code in the modules clean and allow nice human readable sql statements to be maintained and easily modified. 
+this sub-module also imports functions from the utilities module to clean data from the ACS system and format it as needed. 
+The method called to create data is the createTaxDB method. The method called to update a tax year is called updateTaxDB
+
+Usage
+----------------------------
+
+Create all tax years to 2011::
+
+	from PyRPL.__PyRPL import acs_taxes
+	taxdata = acs_taxes.Taxdata()
+	taxdata.buildHPData()
+	for year in range(2011,2012)
+		taxdata.buildACSData(year)
+	taxdata.upatePayments(2012)
+
+**OR**
+
+use the `db.createDB()` to create all 2003 to present for taxes and property.
+
+Update all tax years to 2011::
+
+	from PyRPL.__PyRPL import acs_taxes
+	taxdata = acs_taxes.Taxdata()
+	taxdata.updateTaxDB(2012)
+
+Methods
+------------------------------
+
+.. automodule:: __PyRPL.acs_taxes
+   :members:

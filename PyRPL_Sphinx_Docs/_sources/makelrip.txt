@@ -1,0 +1,5 @@
+makelrip Module
+===============
+
+.. automodule:: makelrip
+   :members:

@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>makelrip &mdash; PyRPL 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyRPL 0.0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../index.html">PyRPL 0.0.1 documentation</a></div>
+        <div class="rel">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for makelrip</h1><div class="highlight"><pre>
+<span class="c">#! /usr/local/bin/python</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sqlite3</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">__PyRPL.utilities</span> <span class="kn">import</span> <span class="n">timed</span>
+
+<span class="nd">@timed</span>
+<div class="viewcode-block" id="makeLRIPfile"><a class="viewcode-back" href="../makelrip.html#makelrip.makeLRIPfile">[docs]</a><span class="k">def</span> <span class="nf">makeLRIPfile</span><span class="p">(</span><span class="n">rollyear</span><span class="p">,</span><span class="n">dbpath</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">filepath</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  create the lrip.tab file which contains property information to be used by</span>
+<span class="sd">  the general public and return data. rollyear is the four digit</span>
+<span class="sd">  year of the roll year you wish to export into the lrip.tab file, if it is not</span>
+<span class="sd">  set it will default to the current year. dbpath is the path to the</span>
+<span class="sd">  property.sqlite database, if not set it will be the location of the script</span>
+<span class="sd">  running this function.  filepath is the path where the lrip.tab file will be</span>
+<span class="sd">  created dbpath is same location as script</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c">#set the database path</span>
+  <span class="k">if</span> <span class="n">dbpath</span><span class="p">:</span>
+    <span class="n">lconn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/property.sqlite&#39;</span><span class="o">%</span><span class="n">dbpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\\</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">lconn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/property.sqlite&#39;</span><span class="o">%</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+  <span class="c">#set the file path</span>
+  <span class="k">if</span> <span class="n">filepath</span><span class="p">:</span>
+    <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\\</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">filepath</span> <span class="o">=</span><span class="s">&#39;.&#39;</span>  
+  <span class="n">lc</span> <span class="o">=</span> <span class="n">lconn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>  
+  <span class="n">lrip</span> <span class="o">=</span><span class="p">[]</span>
+  <span class="n">header</span><span class="o">=</span><span class="s">&quot;PIN</span><span class="se">\t</span><span class="s">COMPUTER_NO</span><span class="se">\t</span><span class="s">OWNER_NAME</span><span class="se">\t</span><span class="s">FIRST_NAME</span><span class="se">\t</span><span class="s">LAST_NAME</span><span class="se">\t</span><span class="s">STREET</span><span class="se">\t</span><span class="s">CITY</span><span class="se">\t</span><span class="s">STATE</span><span class="se">\t</span><span class="s">ZIP</span><span class="se">\t</span><span class="s">PAR_ADDRESS</span><span class="se">\t</span><span class="s">PAR_ZIP_CODE</span><span class="se">\t</span><span class="s">PAR_OCCUPANCY</span><span class="se">\t</span><span class="s">PAR_FIRE_NO</span><span class="se">\t</span><span class="s">PAR_STREET_INDEX</span><span class="se">\t</span><span class="s">ZONING1</span><span class="se">\t</span><span class="s">ZONING2</span><span class="se">\t</span><span class="s">ZONING3</span><span class="se">\t</span><span class="s">MUN_NO</span><span class="se">\t</span><span class="s">SECTION</span><span class="se">\t</span><span class="s">TOWN</span><span class="se">\t</span><span class="s">RANGE</span><span class="se">\t</span><span class="s">LEGAL_DESC</span><span class="se">\t</span><span class="s">LEGAL_ACRES</span><span class="se">\t</span><span class="s">SCHOOL_DIST</span><span class="se">\t</span><span class="s">SCHOOL_CODE</span><span class="se">\t</span><span class="s">DISTRICT1</span><span class="se">\t</span><span class="s">DISTRICT2</span><span class="se">\t</span><span class="s">COMPUTER_ALPHA</span><span class="se">\t</span><span class="s">PIN_KEY</span><span class="se">\t</span><span class="s">HISTORY</span><span class="se">\t</span><span class="s">PAR_NUMBER</span><span class="se">\t</span><span class="s">DOCUMENT_NO</span><span class="se">\t</span><span class="s">OLD_COMP_NO</span><span class="se">\t</span><span class="s">CURRENT_TAXES_BEFORE_LOTTERY_CREDIT</span><span class="se">\t</span><span class="s">PREVIOUS_TAXES_BEFORE_LOTTERY_CREDIT</span><span class="se">\t</span><span class="s">LOTTERY</span><span class="se">\t</span><span class="s">LOTTERY_AMT</span><span class="se">\t</span><span class="s">COUNT</span><span class="se">\t</span><span class="s">TOT_LAND</span><span class="se">\t</span><span class="s">TOT_IMPROVE</span><span class="se">\t</span><span class="s">TOT_VALUE</span><span class="se">\t</span><span class="s">landclass1</span><span class="se">\t</span><span class="s">lcacres1</span><span class="se">\t</span><span class="s">lclandvalue1</span><span class="se">\t</span><span class="s">lcimpvalue1</span><span class="se">\t</span><span class="s">landclass2</span><span class="se">\t</span><span class="s">lcacres2</span><span class="se">\t</span><span class="s">lclandvalue2</span><span class="se">\t</span><span class="s">lcimpvalue2</span><span class="se">\t</span><span class="s">landclass3</span><span class="se">\t</span><span class="s">lcacres3</span><span class="se">\t</span><span class="s">lclandvalue3</span><span class="se">\t</span><span class="s">lcimpvalue3</span><span class="se">\t</span><span class="s">landclass4</span><span class="se">\t</span><span class="s">lcacres4</span><span class="se">\t</span><span class="s">lclandvalue4</span><span class="se">\t</span><span class="s">lcimpvalue4</span><span class="se">\t</span><span class="s">landclass5</span><span class="se">\t</span><span class="s">lcacres5</span><span class="se">\t</span><span class="s">lclandvalue5</span><span class="se">\t</span><span class="s">lcimpvalue5</span><span class="se">\n</span><span class="s">&quot;</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">/lrip.tab&#39;</span><span class="o">%</span><span class="n">filepath</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+  <span class="c">#get base data</span>
+  <span class="n">ssql</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;select PIN,AltNumber,DeededName,Legal,Acres,UTA,History,MapID,DocumentNumber,CurrentYearTaxes,&quot;</span>
+          <span class="s">&quot;PreviousYearTaxes,LotteryCreditCount,LotteryCredit,AssessedLand, &quot;</span>
+          <span class="s">&quot;AssessedImprovement,AssessedTotal &quot;</span>
+          <span class="s">&quot;from newProperty &quot;</span>
+          <span class="s">&quot;where rollyear = </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">rollyear</span><span class="p">)</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">ssql</span>
+    <span class="k">raise</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+  <span class="n">prop</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">print</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">prop</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+  
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+  <span class="k">print</span><span class="s">&#39;prop base done&#39;</span>
+  <span class="c">#get mail to name and address</span>
+  <span class="n">ssql</span> <span class="o">=</span><span class="p">(</span><span class="s">&quot;select PIN,FirstName,LastName,address,City,State,zipcode,percent from newName where rollyear =</span><span class="si">%s</span><span class="s"> and mailto=&#39;T&#39;&quot;</span><span class="o">%</span><span class="n">rollyear</span><span class="p">)</span>
+  <span class="n">n</span>  <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">7</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span>
+        <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="k">print</span> <span class="s">&#39;name base done&#39;</span>
+  <span class="c">#get physical address</span>
+  <span class="n">ssql</span> <span class="o">=</span><span class="p">(</span><span class="s">&quot;select PIN,address,zipcode,streetnumber from newAddress where rollyear= </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">rollyear</span><span class="p">)</span>
+  <span class="n">a</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="n">address</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">print</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">address</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+  <span class="k">print</span> <span class="s">&#39;address base done&#39;</span>
+  <span class="c">#get zoning info</span>
+  <span class="n">ssql</span> <span class="o">=</span> <span class="s">&quot;select pin, zone from newZoning where rollyear=</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">rollyear</span>
+  <span class="n">z</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="n">zone</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span> 
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>        
+    <span class="k">if</span> <span class="n">zone</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">tlist</span> <span class="o">=</span> <span class="n">zone</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+      <span class="n">tlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+      <span class="n">zone</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tlist</span>           
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">zone</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>      
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">zone</span><span class="p">)</span>
+  <span class="k">print</span> <span class="p">(</span><span class="s">&#39;zone base done&#39;</span><span class="p">)</span>
+  <span class="c">#get land class info</span>
+  <span class="n">ssql</span> <span class="o">=</span> <span class="s">&quot;select pin, landclass,acres,landvalue,improvementvalue from newLandClass where rollyear=</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">rollyear</span>
+  <span class="n">lc</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ssql</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+  <span class="n">landclass</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lc</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">landclass</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="n">tlist</span> <span class="o">=</span> <span class="n">landclass</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+      <span class="n">tlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+      <span class="n">landclass</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tlist</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">landclass</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+  
+
+  <span class="c">#start making the list for the lrip.tab file. the data is from the header.</span>
+  <span class="c">#when a 0 is inserted it mean the data is not captured by the ACS system</span>
+  <span class="c">#and is not used but needs to be included in the file so it can be imported</span>
+  <span class="c">#into the current gis system</span>
+  <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">prop</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="c">#get name</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+      <span class="n">nr</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">nr</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c">#get address</span>
+    <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+      <span class="n">ar</span> <span class="o">=</span> <span class="n">address</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">ar</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="c">#get zone</span>
+    <span class="k">if</span> <span class="n">zone</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+      <span class="n">zr</span> <span class="o">=</span> <span class="n">zone</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">zr</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c">#create the giant &#39;fing string</span>
+    <span class="c">#pin alt and mail to</span>
+    <span class="k">if</span> <span class="n">nr</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">nr</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">nr</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                                 <span class="n">nr</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">nr</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">nr</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="n">nr</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t\t\t\t\t\t\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="c">#parcel address and fillers</span>
+    <span class="k">if</span> <span class="n">ar</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">ar</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ar</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ar</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\t\t</span><span class="s">0</span><span class="se">\t\t</span><span class="s">0</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="n">s</span>
+    
+    <span class="c">#add zoning info the file up aw_input(&#39;kill&#39;)to to 3 zone</span>
+    <span class="k">if</span> <span class="n">zr</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">zr</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span><span class="mi">3</span><span class="p">:</span>
+          <span class="n">s</span> <span class="o">=</span><span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="c">#add nulls if needed</span>
+      <span class="n">addnozone</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">x</span>
+      <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">addnozone</span><span class="p">):</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="n">s</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\t\t\t</span><span class="s">&#39;</span><span class="o">%</span><span class="n">s</span>
+    <span class="c">#section town range</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">10</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+    <span class="c">#legal acres thru district 2</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="c">#comp alpah thru oldcompno</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">6</span><span class="p">:],</span><span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c">#tax to end</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span>
+                                           <span class="n">v</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">15</span><span class="p">])</span>
+    <span class="c">#do land class add</span>
+    <span class="k">if</span> <span class="n">landclass</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+      <span class="c">#get length of landclass and start loop to max of 5 land class data sets</span>
+      <span class="n">lclen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">landclass</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+      <span class="n">zval</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">-</span> <span class="n">lclen</span>
+      
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">landclass</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">zval</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="s">none</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="s">none</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\r</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="n">s</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">lrip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="c">#create readme file</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;ReadMe.txt&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;lrip.tab is a tab delimitated file.  all data for a single parcel is contained in a single row.</span><span class="se">\n</span><span class="s">Col#,Name,field type</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+  <span class="n">header</span><span class="o">=</span><span class="s">&quot;PIN</span><span class="se">\t</span><span class="s">COMPUTER_NO</span><span class="se">\t</span><span class="s">OWNER_NAME</span><span class="se">\t</span><span class="s">FIRST_NAME</span><span class="se">\t</span><span class="s">LAST_NAME</span><span class="se">\t</span><span class="s">STREET</span><span class="se">\t</span><span class="s">CITY</span><span class="se">\t</span><span class="s">STATE</span><span class="se">\t</span><span class="s">ZIP</span><span class="se">\t</span><span class="s">PAR_ADDRESS</span><span class="se">\t</span><span class="s">PAR_ZIP_CODE</span><span class="se">\t</span><span class="s">PAR_OCCUPANCY</span><span class="se">\t</span><span class="s">PAR_FIRE_NO</span><span class="se">\t</span><span class="s">PAR_STREET_INDEX</span><span class="se">\t</span><span class="s">ZONING1</span><span class="se">\t</span><span class="s">ZONING2</span><span class="se">\t</span><span class="s">ZONING3</span><span class="se">\t</span><span class="s">MUN_NO</span><span class="se">\t</span><span class="s">SECTION</span><span class="se">\t</span><span class="s">TOWN</span><span class="se">\t</span><span class="s">RANGE</span><span class="se">\t</span><span class="s">LEGAL_DESC</span><span class="se">\t</span><span class="s">LEGAL_ACRES</span><span class="se">\t</span><span class="s">SCHOOL_DIST</span><span class="se">\t</span><span class="s">SCHOOL_CODE</span><span class="se">\t</span><span class="s">DISTRICT1</span><span class="se">\t</span><span class="s">DISTRICT2</span><span class="se">\t</span><span class="s">COMPUTER_ALPHA</span><span class="se">\t</span><span class="s">PIN_KEY</span><span class="se">\t</span><span class="s">HISTORY</span><span class="se">\t</span><span class="s">PAR_NUMBER</span><span class="se">\t</span><span class="s">DOCUMENT_NO</span><span class="se">\t</span><span class="s">OLD_COMP_NO</span><span class="se">\t</span><span class="s">CURRENT_TAXES_BEFORE_LOTTERY_CREDIT</span><span class="se">\t</span><span class="s">PREVIOUS_TAXES_BEFORE_LOTTERY_CREDIT</span><span class="se">\t</span><span class="s">LOTTERY</span><span class="se">\t</span><span class="s">LOTTERY_AMT</span><span class="se">\t</span><span class="s">COUNT</span><span class="se">\t</span><span class="s">TOT_LAND</span><span class="se">\t</span><span class="s">TOT_IMPROVE</span><span class="se">\t</span><span class="s">TOT_VALUE</span><span class="se">\t</span><span class="s">landclass1</span><span class="se">\t</span><span class="s">lcacres1</span><span class="se">\t</span><span class="s">lclandvalue1</span><span class="se">\t</span><span class="s">lcimpvalue1</span><span class="se">\t</span><span class="s">landclass2</span><span class="se">\t</span><span class="s">lcacres2</span><span class="se">\t</span><span class="s">lclandvalue2</span><span class="se">\t</span><span class="s">lcimpvalue2</span><span class="se">\t</span><span class="s">landclass3</span><span class="se">\t</span><span class="s">lcacres3</span><span class="se">\t</span><span class="s">lclandvalue3</span><span class="se">\t</span><span class="s">lcimpvalue3</span><span class="se">\t</span><span class="s">landclass4</span><span class="se">\t</span><span class="s">lcacres4</span><span class="se">\t</span><span class="s">lclandvalue4</span><span class="se">\t</span><span class="s">lcimpvalue4</span><span class="se">\t</span><span class="s">landclass5</span><span class="se">\t</span><span class="s">lcacres5</span><span class="se">\t</span><span class="s">lclandvalue5</span><span class="se">\t</span><span class="s">lcimpvalue5</span><span class="se">\n</span><span class="s">&quot;</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">32</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">33</span> <span class="ow">and</span> <span class="n">x</span><span class="o">&lt;=</span><span class="mi">40</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;number&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">41</span> <span class="ow">and</span> <span class="n">x</span><span class="o">&lt;=</span><span class="mi">59</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s">&#39;number&#39;</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span>  <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+          <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;number&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+  <span class="k">return</span> <span class="n">lrip</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">makeLRIPfile</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span><span class="n">dbpath</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Base Modules.html">User Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code.html">Foundation Modules</a></li>
+</ul>
+
+          <h3 style="margin-top: 1.5em;">Search</h3>
+          <form class="search" action="../search.html" method="get">
+            <input type="text" name="q" />
+            <input type="submit" value="Go" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>
+          <p class="searchtip" style="font-size: 90%">
+            Enter search terms or a module, class or function name.
+          </p>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../genindex.html" title="General Index"
+             >index</a>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer">
+        &copy; Copyright 2012, Matt Kasfeldt.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html> 
