@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <style>
+    img {width:66% !important;}
+  </style>
+  <title>
+   Updating a Customer's CTC in iFinance
+  </title>
+ </head>
+ <body>
+  <h1>
+   Updating a Customer's CTC in iFinance
+  </h1>
+  <p>
+   <b>
+    Group: D365 - iFinance - How To's - iFinance (Customer Management)
+   </b>
+  </p>
+  <p>
+   <i>
+    Modified on: 2023-05-01 @ 22:11:50Z
+   </i>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <strong>
+     Purpose:
+    </strong>
+    Change a customer's CTC number. For Site Customers, the Site field under Sales Order defaults maps to iCare 2.0 and determines the default Service Territory.
+    <span id="isPasted" style="font-size: 12px; font-family: Arial, sans-serif;">
+     Note this will not automatically update the Financial Dimensions on any existing Project or unposted transaction to a different CTC.
+    </span>
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Tip:
+     </em>
+    </strong>
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="background-color: initial; color: rgb(68, 84, 106); font-family: Arial, sans-serif; font-size: 12px;">
+     <em>
+      If the CTC is divided into multiple territories, locate the customer site account in iCare and change the site’s territory.
+     </em>
+    </span>
+   </li>
+   <li style="font-size: 12px; font-family: Arial, sans-serif; font-style: italic;">
+    <em>
+     Work orders that have not been posted to iFinance will get the updated Department “CTC” reference when costs are posted.
+    </em>
+   </li>
+  </ul>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <strong>
+     Prerequisites:
+    </strong>
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="font-size: 12px; font-family: Arial, sans-serif;">
+     Access to D365
+    </span>
+   </li>
+   <li>
+    <span style="font-size: 12px; font-family: Arial, sans-serif;">
+     The customer's General or Site information
+    </span>
+   </li>
+   <li>
+    <span style="font-size: 12px; font-family: Arial, sans-serif;">
+     The new CTC number to be assigned
+    </span>
+   </li>
+  </ul>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    To update a customer's CTC:
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    1. Open iFinance and login.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    2. Navigate to Accounts receivable &gt; Customers &gt; All customers.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031817269" src="../images/17000138362-1.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 1 - Navigate to All Customers
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    3. Locate the customer's General or Site record and click the account link.
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="font-size: 12px; font-family: Arial, sans-serif;">
+     <strong>
+      <em>
+       Note:
+      </em>
+     </strong>
+    </span>
+    <span style="font-size: 12px;">
+     <em>
+      Use the search feature or filter to reduce the result set.
+     </em>
+    </span>
+   </li>
+  </ul>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031817837" src="../images/17000138362-2.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 2 - Click the Account Link
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    4. Update the Site field in the Sales order defaults section to the new CTC number.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031818997" src="../images/17000138362-3.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 3 - Update the Site Field to the New CTC Number
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    5. Update the Department field in the Financial dimensions section
+    <span id="isPasted" style="font-size: 12px; font-family: Arial, sans-serif;">
+     to the new CTC number.
+    </span>
+   </span>
+  </p>
+  <p>
+   <img class="fr-fic fr-fil fr-dib" data-id="17031830517" src="../images/17000138362-4.png" style="width: auto;"/>
+  </p>
+  <p>
+   <strong>
+    <em>
+     <span style="font-size: 10px;">
+      Figure 4 - Update the Department Field to the New CTC Number
+     </span>
+    </em>
+   </strong>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif; color: rgb(226, 80, 65);">
+    <strong>
+     6. If this is a customer Site and you need to update the Financial Dimensions on existing Projects/Service Agreements/Service Orders, continue to steps 7 through 14. If this is the General for the customer you have completed updating the customer's CTC.
+    </strong>
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    7. Click the Projects item in the top menu, then select Projects.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031830938" src="../images/17000138362-5.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 5 - Select Projects
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    8. For each project in the result that you need to update the Financial Dimension for a different CTC to get the revenue/costs perform steps 9 through xx
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    9. Click the Project ID link.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031866319" src="../images/17000138362-6.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 6 - Click the Project ID LInk
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    10. Update the Department field in the Financial dimensions section
+    <span id="isPasted" style="font-size: 12px; font-family: Arial, sans-serif;">
+     to the new CTC number, then click the Save button.
+    </span>
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031866485" src="../images/17000138362-7.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <strong id="isPasted">
+    <em>
+     <span style="font-size: 10px;">
+      Figure 7 - Update the Department Field to the New CTC Number and Click the Save Button
+     </span>
+    </em>
+   </strong>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    11. Click the Manage top menu item, click Service from the ribbon, and select Service agreements.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031866708" src="../images/17000138362-8.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <em>
+     <strong>
+      Figure 8 - Select Service Agreements
+     </strong>
+    </em>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    12. Click the Service agreement link.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031866909" src="../images/17000138362-9.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 9 - Click the Service Agreement Link
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    13.
+   </span>
+   <span style="font-family: Arial, sans-serif; font-size: 12px; background-color: initial;">
+    Update the Department field in the Financial dimensions section to the new CTC number, then click the Save button.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031867009" src="../images/17000138362-10.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <strong>
+    <em>
+     <span style="font-size: 10px;">
+      Figure 10 - Update the Department Field to the New CTC Number and Click the Save Button
+     </span>
+    </em>
+   </strong>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    14. Return to the project screen by clicking the "X" in the upper right corner of the screen.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    15. If the project has sub-projects, select the Sub-project(s) and repeat steps 7 through 14.
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17031867296" src="../images/17000138362-11.png" style="width: auto;"/>
+   </span>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 10px; font-family: Arial, sans-serif;">
+    <strong>
+     <em>
+      Figure 11 - Select the Warranty Sub-Project and Repeat Steps 7 through 14
+     </em>
+    </strong>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <strong style="font-family: Arial, sans-serif; font-size: 12px;">
+    Outcome:
+   </strong>
+   <font face="Arial, Helvetica, sans-serif">
+    <span style="font-size: 12px;">
+     The customer's CTC has been updated. If work orders that have transactions posted to them exist a new work order will need to be created and have the adjustment process performed to move the costs to the new service order.
+    </span>
+   </font>
+  </p>
+  <p>
+   <br/>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <strong>
+     Related Topics:
+    </strong>
+   </span>
+  </p>
+  <p>
+   <span style="font-size: 12px; font-family: Arial, sans-serif;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+ </body>
+</html>

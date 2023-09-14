@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <style>
+    img {width:66% !important;}
+	
+	.figure-text {font-size: 10px; font-weight: bold; font-style: italic; font-family: Arial, sans-serif;}
+	
+  </style>
+  <title>
+   Creating an Item Requirement from Inventory in iFinance
+  </title>
+ </head>
+ <body>
+  <h1>
+   Creating an Item Requirement from Inventory in iFinance
+  </h1>
+  <p>
+   <b>
+    Group: D365 - iFinance - How To's - iFinance (AP Traffic Cop)
+   </b>
+  </p>
+  <p>
+   <i>
+    Modified on: 2023-07-26 @ 14:47:18Z
+   </i>
+  </p>
+  <p>
+   <strong>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Pupose:
+    </span>
+   </strong>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    Create an item requirement from inventory for a project that require Traffic Cop corrective actions.
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <strong>
+     Prerequisites:
+    </strong>
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Access to D365 iFinance
+    </span>
+   </li>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     The project ID
+    </span>
+   </li>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     The part's MPR number
+    </span>
+   </li>
+  </ul>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    To create an item requirement from inventory:
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    1. Open iFinance and login.
+    <br/>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    2. Navigate to Project management and accounting &gt; Projects &gt; All projects.
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17038017985" src="../images/17000148188-1.png" style="width: auto;"/>
+   </span>
+  </p>
+  <p>
+    <span class="figure-text">
+      Figure 1 - Navigate to All Projects
+    </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    3. Click the Project ID link of the required project.
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     <strong>
+      <em>
+       Note:
+      </em>
+     </strong>
+     <em>
+      Use filtering to reduce the result set.
+     </em>
+    </span>
+   </li>
+  </ul>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17038018208" src="../images/17000148188-2.png" style="width: auto;"/>
+   </span>
+  </p>
+  <p>
+   <span class="figure-text">
+      Figure 2 - Click the Project ID Link
+   </span>
+  </p>
+  <br />
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    4. Click the Plan item from the top menu, then select the Item requirements from the ribbon.
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17038018306" src="../images/17000148188-3.png" style="width: auto;"/>
+   </span>
+  </p>
+  <p>
+     <span class="figure-text">
+      Figure 3 - Select Item Requirements
+     </span>
+  </p>
+  <br />
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    5. Click the +New button, then enter the required information in the following fields:
+   </span>
+  </p>
+  <ul>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Item Status = Inventory
+    </span>
+   </li>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Item number = The item's MPR number
+    </span>
+   </li>
+   <li>
+    <font face="Arial, Helvetica, sans-serif">
+     <span style="font-size: 12px;">
+      Quantity = The quantity needed of the part
+     </span>
+    </font>
+   </li>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Warehouse = The warehouse where the part is located
+    </span>
+   </li>
+   <li>
+    <span style="font-family: Arial, sans-serif; font-size: 12px;">
+     Location = The location in the warehouse where the part is located
+    </span>
+   </li>
+  </ul>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17038019102" src="../images/17000148188-4.png" style="width: auto;"/>
+   </span>
+  </p>
+  <p>
+   <span class="figure-text">
+      Figure 4 - Enter the Item Requirement's Information
+   </span>
+  </p>
+  <br />
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    6. Click the Save button in the top menu.
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <img class="fr-fic fr-fil fr-dib" data-id="17038019236" src="../images/17000148188-5.png" style="width: auto;"/>
+   </span>
+  </p>
+  <p>
+     <span class="figure-text">
+      Figure 5 - Click the Save Button
+     </span>
+  </p>
+  <br/>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <strong>
+     Outcome:
+    </strong>
+    The item requirement has been added to the project from inventory.
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <strong>
+     Related Topics:
+    </strong>
+   </span>
+  </p>
+  <p>
+   <span style="font-family: Arial, sans-serif; font-size: 12px;">
+    <br/>
+   </span>
+  </p>
+  <p>
+   <br/>
+  </p>
+ </body>
+</html>
